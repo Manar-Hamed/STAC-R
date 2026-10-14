@@ -1,0 +1,7 @@
+config,turbo_quality,control,change,speedup_vs_full
+BERT-base SST-2,92.96 +/- 0.18 pct accuracy,92.81 pct full,+0.15 pp,1.57
+BERT-large SST-2,93.77 +/- 0.27 pct accuracy,93.92 pct baseline,-0.15 pp,1.22
+GPT-2 Large batch 8,14.691 +/- 0.006 PPL,14.586 full,+0.72 pct PPL,1.67
+GPT-2 Large batch 11,14.546 +/- 0.039 PPL,14.430 full,+0.80 pct PPL,1.63
+GPT-2 XL batch 6,13.417 +/- 0.012 PPL,13.315 full,+0.77 pct PPL,1.66
+GPT-2 XL seq 1024,12.442 +/- 0.028 PPL,12.358 full,+0.68 pct PPL,1.57

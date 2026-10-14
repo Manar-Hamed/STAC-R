@@ -1,0 +1,8 @@
+metric,bert_base,gpt2_124m,gpt2_large
+Layers checked,12/12,24/24,72/72
+Mean cosine full,0.869,0.996,0.985
+Mean bound sqrt one minus s,0.842,0.996,0.984
+q-bridge MAE,3.45e-5,6.87e-6,5.00e-6
+Mean p to s,0.855 to 0.287,0.390 to 0.008,0.640 to 0.032
+Residual error drop,3.0x,50.6x,20.2x
+Bound holds,12/12,24/24,72/72

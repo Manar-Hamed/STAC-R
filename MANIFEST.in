@@ -1,0 +1,4 @@
+include README.md LICENSE.txt requirements*.txt main.py download_data.py reproduce*.sh reproduce*.ps1
+recursive-include examples *.py
+recursive-include tests *.py
+global-exclude *.pyc

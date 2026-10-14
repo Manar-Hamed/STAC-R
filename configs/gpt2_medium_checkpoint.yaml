@@ -1,0 +1,11 @@
+task: language_modeling
+method: checkpointing
+model_name: gpt2-medium
+dataset: wikitext-103
+seq_len: 1024
+batch_size: 2
+steps: 500
+max_examples: 2048
+lr: 5.0e-5
+seed: 42
+device: auto

@@ -1,0 +1,14 @@
+cohort,method,peak_gib,ppl,time_s,memory_saved_pct
+GPT-2 Medium,baseline,24.251,17.3574,136.0,0.00
+GPT-2 Medium,checkpointing,8.328,17.3569,182.2,65.66
+GPT-2 Medium,STAC-R full,22.019,17.6105,265.4,9.20
+GPT-2 Medium,Turbo-fast,22.002,17.5319,148.9,9.27
+Pythia-1.4B,baseline,12.721,10.8607,318.7,0.00
+Pythia-1.4B,STAC-R full,11.803,10.9675,604.0,7.22
+Pythia-1.4B,Turbo-fast,11.840,11.0316,398.0,6.93
+GPT-2 Large + GaLore,baseline,14.614,15.0092,656.3,0.00
+GPT-2 Large + GaLore,GaLore,10.894,16.2299,941.5,25.46
+GPT-2 Large + GaLore,STAC-R + GaLore,9.591,16.6596,1875.9,34.37
+GPT-2 Large,baseline,14.776,17.4565,82.7,0.00
+GPT-2 Large,STAC-R MLP-only,13.040,17.6579,198.1,11.75
+GPT-2 Large,STAC-R MLP+attention,12.546,17.7873,371.3,15.09

@@ -1,0 +1,12 @@
+task: sequence_classification
+method: subtrack
+model_name: bert-base-uncased
+dataset: sst2
+seq_len: 128
+batch_size: 8
+steps: 100
+max_examples: 512
+lr: 2.0e-5
+rank: 4
+seed: 42
+device: auto

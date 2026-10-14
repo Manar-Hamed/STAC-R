@@ -1,0 +1,5 @@
+model_task,pure_lr_rank,seeds,hybrid_tok_s,pure_lr_tok_s,gain_pct
+BERT-base SST-2,139,20,11927,11109,7.4
+BERT-large SST-2,182,6,6158,4860,26.7
+GPT-2 Large WT103,144,9,12246,8766,39.7
+GPT-2 XL WT103,178,12,4915,3167,55.2

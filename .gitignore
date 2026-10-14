@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+.cache/
+.hf_map_cache/
+.ruff_cache/
+*.egg-info/
+/build/
+/dist/
+/outputs/
+generated_figures/
+.env
+*.pem
+*.key

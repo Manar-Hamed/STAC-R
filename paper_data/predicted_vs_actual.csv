@@ -1,0 +1,5 @@
+row,ssp_pct,measured_saving_pct
+GPT-2 Medium STAC-R,8.29,9.20
+GPT-2 Medium Turbo-fast,8.29,9.27
+Pythia-1.4B STAC-R,7.21,7.22
+Pythia-1.4B Turbo-fast,7.36,6.93

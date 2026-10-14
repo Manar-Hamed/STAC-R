@@ -1,0 +1,9 @@
+family,row,rank,mean_cosine,worst_cosine
+GPT-2 Medium STAC-R,r8,8,0.9813,0.9439
+GPT-2 Medium STAC-R,r307,307,0.9951,0.9853
+GPT-2 Medium STAC-R,r512,512,0.9967,0.9902
+GPT-2 Medium untracked subspace,r8,8,0.6949,0.6948
+GPT-2 Medium untracked subspace,r307,307,0.7947,0.7944
+GPT-2 Medium untracked subspace,r512,512,0.8222,0.8219
+Pythia,STAC-R full,8,0.9672,0.9015
+Pythia,Turbo-fast,8,0.9650,0.8951

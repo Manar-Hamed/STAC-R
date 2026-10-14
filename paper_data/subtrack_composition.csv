@@ -1,0 +1,4 @@
+config,accuracy_mean,accuracy_std,peak_allocated_gb,peak_reserved_gb,delta_vs_rank4_pct
+SubTrack++ baseline,92.74,0.13,2.711,3.445,
+SubTrack++ rank 4,90.90,0.18,2.207,2.732,
+SubTrack++ plus STAC-R,91.28,0.00,1.919,2.406,-13.1 allocated; -11.9 reserved

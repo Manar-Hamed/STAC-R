@@ -1,0 +1,8 @@
+row,ssp_pct,memory_outcome,quality_delta,cosine,decision
+GPT-2 Medium STAC-R,8.29,9.20 saved,+1.46 pct PPL,0.9813,Full or Turbo-fast
+GPT-2 Medium Turbo-fast,8.29,9.27 saved,+1.01 pct PPL,0.9938,Runtime priority
+Pythia-1.4B STAC-R,7.21,7.22 saved,+1.14 pct PPL,0.9917,Full mode
+Pythia-1.4B Turbo-fast,7.36,6.93 saved,+1.22 pct PPL,0.9912,Runtime priority
+BERT-base SST-2,,12.45 saved,-0.15 pp acc,,Downstream check
+Qwen/Llama SwiGLU,,memory-increasing vs. checkpointed baseline,+0.92/+8.76 pct PPL,0.991,Recompute; compress non-recomputed blocks
+GPT-2 checkpoint-compatible,,65.66 saved by checkpointing,matched PPL,,Recompute

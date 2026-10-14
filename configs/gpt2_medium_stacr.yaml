@@ -1,0 +1,14 @@
+task: language_modeling
+method: stacr
+model_name: gpt2-medium
+dataset: wikitext-103
+seq_len: 1024
+batch_size: 2
+steps: 500
+max_examples: 2048
+lr: 5.0e-5
+rank: 8
+residual_budget: 0.005
+min_features: 256
+seed: 42
+device: auto

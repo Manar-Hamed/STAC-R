@@ -1,0 +1,4 @@
+mode,sst2_bert_accuracy,gpt2_large_wt103_ppl
+Full STAC-R rank 8 plus sparse residual,92.89,16.31
+Low-rank only rank 8 no residual,92.78,16.33
+Sparse-only top-k 0.5 pct budget,92.70,16.61

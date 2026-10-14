@@ -1,0 +1,7 @@
+method,rank,bytes_per_entry,cosine,distortion
+STAC-R,8,0.091,0.9813,0.0094
+STAC-R,32,0.219,0.9869,0.0066
+STAC-R,128,0.607,0.9922,0.0039
+STAC-R,307,1.282,0.9951,0.0025
+SVD iso-byte,30,0.091,0.9236,0.0397
+Untracked,307,1.282,0.7947,0.1144

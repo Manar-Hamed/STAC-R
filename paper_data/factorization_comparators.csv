@@ -1,0 +1,6 @@
+method,peak_gb,throughput_tok_s,accuracy,activation_compression
+Baseline,2.82,2628,92.66,
+STAC-R,2.54,730,93.12,24.7
+SVD per batch,3.16,116,93.00,438.6
+TT per batch,2.61,117,93.23,2976
+Tucker per batch,3.19,76,92.78,1352

@@ -1,0 +1,4 @@
+benchmark,stacr,instant_ov15,instant_ov25,seeds
+SST-2/BERT,+0.19 pp acc; -11.2 pct peak,-0.54 pp; +0.1 pct peak,-0.54 pp; +2.4 pct peak,3/3
+GPT-2 Large/WT103,+1.4 pct PPL; -9.3 pct peak,+21.8 pct PPL; +15.5 pct peak,+21.7 pct PPL; +7.8 pct peak,2/2
+MRPC/BERT,-0.010 F1; -13.4 pct peak,-0.012 F1; +1.5 pct peak,-0.007 F1; +3.7 pct peak,4/3

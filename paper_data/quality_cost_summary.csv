@@ -1,0 +1,7 @@
+model,surface,memory_delta_pct,quality_delta,time_x,mean_cosine,notes
+GPT-2 Medium,MLP-linear rank 8,-9.20,+1.46 pct PPL,1.95,0.9813,500-step cohort
+GPT-2 Large,MLP-linear rank 8,-11.75,+1.15 pct PPL,2.40,,MLP-only
+Pythia-1.4B,MLP-linear rank 8,-7.22,+1.14 pct PPL,1.90,0.9917,2k memory; 10k PPL
+BERT-base SST-2,MLP-linear rank 8 full 3-epoch,-12.45,-0.15 pp accuracy,2.04,,3-seed SST-2
+Qwen-2.5-1.5B,SwiGLU MLP rank 8 batch 2 seq 1024,+66.23,+0.92 pct PPL,1.41,0.9909,checkpointed baseline; 5k
+Llama-3.2-1B,SwiGLU MLP rank 8 batch 2 seq 1024,+75.99,+8.76 pct PPL,1.31,0.9906,checkpointed baseline; 5k

@@ -1,0 +1,11 @@
+regime,evidence,binding_factor
+Checkpoint-boundary compression,+11.2 pct PPL; +0.79 GiB peak,checkpoint boundary overhead
+GNN target mismatch,0 pct memory saving; about -10 percentage points accuracy,message-passing memory
+Checkpointed Llama 32 GiB regime,OOM or +8 pct to +39 pct peak,checkpointing removes target surface
+Small activation-fraction fine-tuning,approximately unchanged fp32 SST-2 peak,small saved-activation fraction
+GPT-2 XL seq 1024 Adaptive Turbo,batch 3: +3.002 GiB; +2.21 pct PPL,batch crossing with quality variance
+GPT-2 Large attention surface,+0.493 GiB saved vs MLP-only; +87.45 pct time,split-QKV overhead
+GPT-2 checkpointing-compatible configuration,17.3569 PPL; 8.3277 GiB,recompute dominates memory
+Qwen-2.5-1.5B 32 GiB shape,5k: +66.23 pct peak; cosine 0.9909/0.9092,checkpointed baseline removes target surface
+Llama-3.2-1B 32 GiB shape,5k: +75.99 pct peak; cosine 0.9906/0.9061,checkpointed baseline removes target surface
+Naive adaptive rank c_fc 4 c_proj 12,17.6566 PPL; 0.908 mean cosine,per-layer floor violation

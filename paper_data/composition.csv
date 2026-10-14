@@ -1,0 +1,7 @@
+method,ppl_mean,ppl_std,peak_gib,time_s,peak_delta_pct
+baseline,15.0092,0.0028,14.614,656.3,0.00
+GaLore,16.2299,0.0074,10.894,941.5,-25.46
+STAC-R + GaLore,16.6596,0.0262,9.591,1875.9,-34.37
+Turbo-fast + GaLore,16.5898,0.0092,9.587,1257.9,-34.40
+STAC-R marginal over GaLore,0.4297,0.0334,-1.302,934.5,-11.96
+Turbo-fast marginal over GaLore,0.3600,0.0036,-1.307,316.4,-12.00

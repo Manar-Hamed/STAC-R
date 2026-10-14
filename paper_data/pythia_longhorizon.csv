@@ -1,0 +1,5 @@
+row,ppl,ppl_delta_pct,mean_cosine,worst_cosine,time_x,ppl_std
+5k STAC-R seed 42,11.4527,2.56,0.9901,0.9015,1.23,
+10k baseline 5-seed,13.172,0.00,,,1.00,0.106
+10k STAC-R 5-seed,13.322,1.14,0.9917,0.8930,1.24,0.047
+10k Turbo-fast 5-seed,13.333,1.22,0.9912,0.8855,1.22,

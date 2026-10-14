@@ -1,0 +1,12 @@
+# CPU dependencies; choose a CUDA-enabled PyTorch build for GPU training.
+torch==2.7.1
+transformers==4.57.6
+datasets==3.6.0
+accelerate==1.12.0
+numpy==1.26.4
+PyYAML==6.0.3
+pytest>=8
+pandas>=2
+matplotlib>=3.7
+tensorly>=0.8
+psutil>=5.9

@@ -1,0 +1,10 @@
+task: synthetic
+method: turbofast
+features: 512
+hidden: 256
+batch_size: 8
+steps: 60
+rank: 8
+residual_budget: 0.01
+seed: 42
+device: auto

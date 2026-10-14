@@ -1,0 +1,4 @@
+setting,baseline,stacr,delta
+5k batch 2 checkpointing AMP,14.91 PPL / 5.61 GB,15.15 PPL / 4.87 GB,+1.6 pct PPL; -13.3 pct memory
+200 steps batch 2 checkpointing 8-bit,17.30 PPL / 5.61 GB,17.40 PPL / 4.87 GB,+0.6 pct PPL; -13.2 pct memory
+Max verified batch checkpointing AMP,batch 22,batch 26,+18.2 pct capacity
