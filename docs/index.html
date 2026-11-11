@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STAC-R: Subspace-Tracked Activation Compression with Residuals</title>
+<meta name="description" content="STAC-R compresses the activations saved for backpropagation into a tracked low-rank basis plus a sparse residual, and predicts before training whether that will lower peak memory. NeurIPS 2026.">
+<meta property="og:title" content="STAC-R: Subspace-Tracked Activation Compression with Residuals (NeurIPS 2026)">
+<meta property="og:description" content="Compress saved activations, and know before training whether it will lower peak GPU memory.">
+<meta property="og:image" content="https://manar-hamed.github.io/STAC-R/static/img/method.png">
+<meta property="og:url" content="https://manar-hamed.github.io/STAC-R/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fira+Mono&display=swap" rel="stylesheet">
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+<style>
+  :root {
+    --stacr: #912338; --stacr-light: #E9C9CF; --ink: #1F2328; --muted: #5B6470;
+    --slate: #3B6EA8; --rule: #D9DDE3; --tint: #F6F3F1; --bg: #FFFFFF;
+    --maxw: 920px;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 17px/1.6 "Fira Sans", system-ui, -apple-system, "Segoe UI", sans-serif; }
+  a { color: var(--stacr); }
+  .topbar { height: 6px; background: var(--stacr); }
+  main { max-width: var(--maxw); margin: 0 auto; padding: 0 20px 64px; }
+  header { text-align: center; padding: 44px 0 8px; }
+  .venue { display: inline-block; font-weight: 600; font-size: 14px; letter-spacing: .06em;
+           text-transform: uppercase; color: var(--stacr); border: 1.5px solid var(--stacr);
+           border-radius: 999px; padding: 3px 14px; margin-bottom: 18px; }
+  h1 { font-size: clamp(28px, 5vw, 44px); line-height: 1.15; margin: 0 0 6px; font-weight: 700; }
+  h1 .acr { color: var(--stacr); }
+  .subtitle { font-size: clamp(18px, 2.6vw, 22px); color: var(--ink); margin: 0 0 20px; font-weight: 500; }
+  .authors { font-size: 19px; margin: 0; }
+  .authors a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  .authors a:hover { border-color: var(--stacr); }
+  .affil { color: var(--muted); margin: 4px 0 22px; font-size: 16px; }
+  .buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 0 0 8px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 999px;
+         background: var(--ink); color: #fff; text-decoration: none; font-weight: 500; font-size: 15px; }
+  .btn:hover { background: var(--stacr); }
+  .btn.soon { background: #fff; color: var(--muted); border: 1.5px dashed var(--rule); cursor: default; }
+  .btn svg { width: 16px; height: 16px; fill: currentColor; }
+  .tldr { background: var(--tint); border-left: 4px solid var(--stacr); border-radius: 4px;
+          padding: 16px 20px; margin: 30px 0 8px; font-size: 18px; }
+  .tldr b { color: var(--stacr); }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 22px 0 6px; }
+  .stat { border: 1px solid var(--rule); border-radius: 8px; padding: 14px 14px 12px; }
+  .stat .n { font-size: 21px; font-weight: 700; color: var(--stacr); line-height: 1.2; }
+  .stat .l { font-size: 14px; color: var(--muted); line-height: 1.35; margin-top: 4px; }
+  h2 { font-size: 26px; margin: 52px 0 10px; padding-top: 6px; border-top: 1px solid var(--rule); }
+  h2 .kicker { display: block; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--stacr); font-weight: 700; margin: 10px 0 2px; }
+  h3 { font-size: 18px; margin: 22px 0 6px; }
+  figure { margin: 18px 0 8px; text-align: center; }
+  figure img { max-width: 100%; height: auto; }
+  figcaption { font-size: 14px; color: var(--muted); margin-top: 6px; text-align: left; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; margin: 16px 0; }
+  .card { background: var(--tint); border-radius: 8px; padding: 14px 16px; }
+  .card .h { font-size: 12px; letter-spacing: .07em; text-transform: uppercase; color: var(--stacr); font-weight: 700; }
+  .card .eq { margin: 6px 0 4px; overflow-x: auto; }
+  .card .c { font-size: 14px; color: var(--muted); }
+  .table-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0 6px; font-size: 16px; }
+  th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  thead th { border-bottom: 2px solid var(--ink); font-weight: 600; }
+  td.mem { color: var(--stacr); font-weight: 600; }
+  ol.rule { padding-left: 22px; }
+  ol.rule li { margin: 8px 0; }
+  ol.rule li::marker { color: var(--stacr); font-weight: 700; }
+  ul li { margin: 4px 0; }
+  .note { font-size: 14px; color: var(--muted); }
+  details.abstract { border: 1px solid var(--rule); border-radius: 8px; padding: 10px 16px; margin-top: 10px; }
+  details.abstract summary { cursor: pointer; font-weight: 600; }
+  details.abstract p { text-align: justify; hyphens: auto; }
+  .session { display: flex; flex-wrap: wrap; gap: 8px 28px; background: var(--tint); border-radius: 8px; padding: 16px 20px; }
+  .session div b { display: block; font-size: 12px; letter-spacing: .07em; text-transform: uppercase; color: var(--stacr); }
+  pre.bib { position: relative; background: #F3F4F6; border-radius: 8px; padding: 16px; overflow-x: auto;
+            font: 14px/1.5 "Fira Mono", ui-monospace, Menlo, monospace; }
+  .copy { position: absolute; top: 8px; right: 8px; font: 500 13px "Fira Sans", sans-serif; border: 1px solid var(--rule);
+          background: #fff; border-radius: 6px; padding: 4px 10px; cursor: pointer; color: var(--ink); }
+  footer { max-width: var(--maxw); margin: 0 auto; padding: 20px 20px 40px; color: var(--muted); font-size: 14px;
+           border-top: 1px solid var(--rule); }
+  @media (max-width: 600px) { body { font-size: 16px; } h2 { font-size: 22px; } .tldr { font-size: 16px; } }
+</style>
+</head>
+<body>
+<div class="topbar"></div>
+<main>
+
+<header>
+  <div class="venue">NeurIPS 2026 &middot; Paris</div>
+  <h1><span class="acr">STAC-R</span></h1>
+  <p class="subtitle">Subspace-Tracked Activation Compression with Residuals</p>
+  <p class="authors">
+    <a href="mailto:manar.hamed@mail.concordia.ca">Manar Hamed</a> &nbsp;&middot;&nbsp;
+    <a href="mailto:yassine.yaakoubi@concordia.ca">Yassine Yaakoubi</a>
+  </p>
+  <p class="affil">Department of Mechanical, Industrial and Aerospace Engineering, Concordia University, Montr&eacute;al</p>
+  <div class="buttons">
+    <a class="btn" href="static/STAC-R_NeurIPS2026.pdf">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6zM14 3.5V8h4.5z"/></svg>Paper (PDF)</a>
+    <a class="btn" href="https://github.com/Manar-Hamed/STAC-R">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.6 18.3 5 18.3 5c.7 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></svg>Code</a>
+    <span class="btn soon" title="Coming soon">Video (soon)</span>
+    <span class="btn soon" title="Coming soon">Poster (soon)</span>
+    <a class="btn" href="#bibtex">BibTeX</a>
+  </div>
+</header>
+
+<div class="tldr">
+  <b>TL;DR</b> STAC-R compresses the activations saved for backpropagation into a <b>tracked low-rank basis plus a sparse residual</b>,
+  computes weight gradients directly from the compressed factors, and lets you <b>predict before training</b> whether it will
+  lower peak GPU memory and what it costs in gradient fidelity.
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="n">&minus;7.2 to &minus;11.8%</div><div class="l">peak memory on GPT-2 Medium/Large and Pythia-1.4B</div></div>
+  <div class="stat"><div class="n">&ge; 0.98</div><div class="l">mean gradient cosine (GPT-2 Medium replay, Pythia 10k)</div></div>
+  <div class="stat"><div class="n">+1.14%</div><div class="l">validation PPL on Pythia-1.4B (10k steps, 5 seeds)</div></div>
+  <div class="stat"><div class="n">&minus;38.6%</div><div class="l">with half the blocks checkpointed (vs &minus;33.8% for checkpointing alone, same time)</div></div>
+  <div class="stat"><div class="n">0.90&ndash;0.92&times;</div><div class="l">baseline wall time at 7&ndash;8B (Turbo-fast, sequence length 4096)</div></div>
+</div>
+
+<details class="abstract">
+  <summary>Abstract</summary>
+  <p>Training-memory reduction requires identifying which saved tensors drive peak usage and ensuring high-fidelity backward contractions from compressed states. We formalize saved-activation compression as a <em>target-surface prediction problem</em>: estimate, before training, the resident saved surface a compressor can replace and the parameter-gradient error it induces. We introduce STAC-R (Subspace-Tracked Activation Compression with Residuals), a saved-tensor wrapper that stores activations as persistent low-rank coefficients plus a sparse quantized residual and contracts weight gradients directly from these factors, bypassing full decompression. The Saved-Surface Predictor (\(\mathrm{SSP}=A_C^+/P\)) estimates the peak-memory reduction available on that surface, and a <em>gradient bridge</em> links reconstruction error to parameter-gradient cosine similarity. On GPT-2 Medium/Large and Pythia-1.4B, full STAC-R reduces peak memory by 7.2-11.8% with mean gradient cosine \(\ge 0.98\) in the GPT-2 Medium replay and the Pythia-1.4B 10k-step cohort (5 seeds: +1.14% validation perplexity); on BERT fine-tuning (SST-2), it reduces peak memory by 12.45% with a 0.15&nbsp;pp accuracy decrease. Same-surface replays give 0.9813 mean gradient cosine versus 0.9236 for iso-byte SVD and 0.6949 for an untracked subspace. The speed-prioritized Turbo-fast variant reduces GPT-2 Medium peak memory by 9.50% at 0.99&times; baseline wall time (+1.82% perplexity at 400 steps), and, at sequence length 4096, the peak memory of Qwen-2.5-7B, Llama-3.1-8B, and Mistral-7B by 6.65-7.46% at 0.90-0.92&times; (memory and runtime only). Applied to the blocks that activation checkpointing does not recompute, it raises the GPT-2 Medium saving from 33.84% to 38.58% at similar wall time (+0.61% versus +0.02% perplexity); its per-GPU saving stays near 8.9% under DDP up to eight GPUs and rises with FSDP2 world size. Once recomputation has removed the target surface, compression has nothing to act on (\(\mathrm{SSP}\to 0\)): the memory increases observed on Qwen-2.5-1.5B and Llama-3.2-1B occur against checkpointed baselines, and in a controlled sweep against uncheckpointed baselines both models reduce peak memory by 7-8%.</p>
+</details>
+
+<h2><span class="kicker">The problem</span>Compression must hit the peak and keep the gradient</h2>
+<p>Peak training memory comes from several surfaces: parameters, optimizer state, the activations saved for the backward pass, and workspaces.
+Compressing saved activations lowers the peak only if it (1) replaces the tensors that <b>set the peak</b> and (2) keeps the
+<b>backward contraction</b> that forms the weight gradient. A high compression ratio guarantees neither, so we treat compression as a
+<b>prediction problem</b>: estimate both before training.</p>
+
+<h2><span class="kicker">Method</span>A tracked low-rank basis plus a sparse residual</h2>
+<figure>
+  <img src="static/img/method.png" alt="Diagram: saved activation A is stored as coefficients C times a tracked basis Q-transpose, plus a sparse 8-bit residual R_s." width="900">
+</figure>
+<ul>
+  <li>Each saved activation \(A \in \mathbb{R}^{B\times N}\) is stored as \(\widehat A = C\,Q^\top + R_s\), with coefficients \(C = AQ\).</li>
+  <li>The orthonormal basis \(Q\) is <b>tracked across batches</b> with an Oja update, so its cost is amortized instead of recomputed every step.</li>
+  <li>\(R_s\) is a <b>sparse 8-bit residual</b> (0.5% of entries): an explicit correction channel for off-subspace error.</li>
+  <li>The backward pass contracts <b>directly from the factors</b>, with no decompression: \(\widehat{\nabla W} = (G^\top C)\,Q^\top + G^\top R_s\). The forward map and optimizer are unchanged.</li>
+  <li><b>Turbo-fast</b>, the deployment variant, runs full STAC-R for two steps, then freezes \(Q\) and drops \(R_s\).</li>
+</ul>
+
+<h2><span class="kicker">Prediction</span>Predict the saving and the fidelity cost before training</h2>
+<div class="cards">
+  <div class="card"><div class="h">Theorem 1 &middot; memory ceiling</div>
+    <div class="eq">\(A_C^{+} = \max\{W - S_C,\,0\} \le W\)</div>
+    <div class="c">A compressor can save at most the saved bytes it wraps.</div></div>
+  <div class="card"><div class="h">Saved-Surface Predictor</div>
+    <div class="eq">\(\mathrm{SSP} = A_C^{+} / P\)</div>
+    <div class="c">Replaceable bytes &divide; baseline peak memory.</div></div>
+  <div class="card"><div class="h">Lemma 1 &middot; gradient bridge</div>
+    <div class="eq">\(\|\Delta\nabla W\|_F \le \|G\|_2\,\|E\|_F\)</div>
+    <div class="eq">\(\Rightarrow \cos(\nabla W,\widehat{\nabla W}) \ge \sqrt{1-\epsilon_G^2}\)</div>
+    <div class="c">Holds on all 108 probed layers (BERT-base, GPT-2, GPT-2 Large).</div></div>
+</div>
+<figure>
+  <img src="static/img/ssp.png" alt="Bar chart: SSP-predicted vs measured peak-memory saving. GPT-2 Medium 8.29 vs 9.20; Turbo 8.29 vs 9.27; Pythia-1.4B 7.21 vs 7.22; Pythia Turbo 7.36 vs 6.93." width="640">
+  <figcaption>SSP-predicted vs measured allocator saving (%). SSP is an estimate, not a bound. What matters is the wrapped surface's share of the peak, not the compression ratio.</figcaption>
+</figure>
+
+<h2><span class="kicker">Mechanism</span>Tracking and the residual keep the gradient faithful</h2>
+<figure>
+  <img src="static/img/isobyte.png" alt="Bar chart of gradient error at matched stored bytes: STAC-R 0.067, same basis without residual 0.082, OASIS 0.092, PRAC 0.094, untracked 0.295." width="760">
+  <figcaption>Gradient error \(\epsilon_{\cos} = (1-\cos)/(1+\cos)\) at the same stored bytes (8.6 MiB, GPT-2 Medium MLP surface, RNG-pinned; lower is better). OASIS and PRAC are local reimplementations of their bases with the same factor-native backward.</figcaption>
+</figure>
+<ul>
+  <li>Over a 240-step full-model replay, STAC-R keeps a mean gradient cosine of <b>0.981</b>, vs 0.695 for an untracked subspace at the same rank.</li>
+  <li>At the same peak memory (&plusmn;0.11 pp), STAC-R has the lowest perplexity cost: +0.92% vs +1.64&ndash;2.02% for the other bases. The residual costs runtime (1.70&times; vs &le;1.07&times;).</li>
+</ul>
+
+<h2><span class="kicker">Results</span>7&ndash;12% lower peak memory at a small quality cost</h2>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Model</th><th>Peak memory</th><th>Quality</th><th>Grad. cosine</th><th>Time</th></tr></thead>
+  <tbody>
+    <tr><td>GPT-2 Medium</td><td class="mem">&minus;9.20%</td><td>+1.46% PPL</td><td>0.981</td><td>1.95&times;</td></tr>
+    <tr><td>GPT-2 Large</td><td class="mem">&minus;11.75%</td><td>+1.15% PPL</td><td>&ndash;</td><td>2.40&times;</td></tr>
+    <tr><td>Pythia-1.4B</td><td class="mem">&minus;7.22%</td><td>+1.14% PPL (10k steps, 5 seeds)</td><td>0.992</td><td>1.90&times;</td></tr>
+    <tr><td>BERT-base, SST-2</td><td class="mem">&minus;12.45%</td><td>&minus;0.15 pp accuracy (3 seeds)</td><td>&ndash;</td><td>2.04&times;</td></tr>
+  </tbody>
+</table>
+</div>
+<p class="note">Full STAC-R, rank 8 on the MLP linear layers; matched cohorts on one RTX 5090, each row compared with its own baseline. Turbo-fast (below) is the speed-prioritized variant.</p>
+
+<h2><span class="kicker">Deployment</span>Complements checkpointing and scales to 8B</h2>
+<figure>
+  <img src="static/img/frontier.png" alt="Line chart: peak memory saved vs wall time for checkpointing only and checkpointing plus Turbo-fast on GPT-2 Medium." width="700">
+  <figcaption>GPT-2 Medium (WikiText-103, RTX 5090, b=8, s=1024, 400 steps, 3 seeds). Points are 0, 3, 6, 12 and 24 checkpointed blocks; Turbo-fast compresses only the blocks that are not recomputed.</figcaption>
+</figure>
+<ul>
+  <li><b>Turbo-fast alone:</b> &minus;9.5% peak memory at 0.99&times; baseline time (+1.82% PPL at 400 steps).</li>
+  <li><b>7&ndash;8B, sequence length 4096 (H100):</b> Qwen-2.5-7B &minus;7.38%, Llama-3.1-8B &minus;6.65%, Mistral-7B &minus;7.46%, at 0.90&ndash;0.92&times; time (memory and runtime only).</li>
+  <li><b>Multi-GPU:</b> about 8.9% per GPU under DDP up to 8 GPUs; under FSDP2 it grows from 6.5% to 10.0% (1 to 4 GPUs).</li>
+</ul>
+
+<h2><span class="kicker">Takeaway</span>When to use it</h2>
+<ol class="rule">
+  <li><b>Checkpointing fits your time budget?</b> Use it first: it reaches the lowest peak (&minus;67.7% at 1.29&times; on GPT-2 Medium).</li>
+  <li><b>Recomputation already removed the activations?</b> Then SSP &rarr; 0 and there is nothing to compress.</li>
+  <li><b>Activations resident?</b> SSP estimates the saving and Lemma 1 bounds the fidelity cost. If runtime is binding, use Turbo-fast.</li>
+  <li><b>Using both?</b> Compress only the blocks you don't recompute.</li>
+</ol>
+<p class="note"><b>Limitations.</b> Quality is not reported at 7B/8B scale, distributed results cover per-GPU memory only, and quality should be validated at the intended training horizon. See the paper's Operating Regimes section.</p>
+
+<h2><span class="kicker">Come say hi</span>Poster session in Paris</h2>
+<div class="session">
+  <div><b>Session</b>Paris Poster Session 3</div>
+  <div><b>When</b>Thursday 10 December 2026, 12:30 CET</div>
+  <div><b>Where</b>Paris Poster Hall</div>
+</div>
+
+<h2 id="bibtex"><span class="kicker">Cite</span>BibTeX</h2>
+<pre class="bib"><button class="copy" type="button" onclick="copyBib(this)">Copy</button><code id="bib">@inproceedings{hamed2026stacr,
+  title     = {{STAC-R}: Subspace-Tracked Activation Compression with Residuals},
+  author    = {Hamed, Manar and Yaakoubi, Yassine},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2026}
+}</code></pre>
+
+<h2><span class="kicker">Contact</span>Questions?</h2>
+<p>Email <a href="mailto:manar.hamed@mail.concordia.ca">manar.hamed@mail.concordia.ca</a> or
+<a href="mailto:yassine.yaakoubi@concordia.ca">yassine.yaakoubi@concordia.ca</a>, or open an issue on
+<a href="https://github.com/Manar-Hamed/STAC-R/issues">GitHub</a>.</p>
+
+</main>
+<footer>&copy; 2026 Manar Hamed and Yassine Yaakoubi &middot; Concordia University</footer>
+<script>
+  function copyBib(btn) {
+    var text = document.getElementById('bib').innerText;
+    var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1500); };
+    try {
+      if (navigator.clipboard) { navigator.clipboard.writeText(text).then(done, function () {}); }
+    } catch (e) {}
+  }
+</script>
+</body>
+</html>
