@@ -12,7 +12,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fira+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400&family=Raleway:wght@600;700&family=Roboto+Mono&display=swap" rel="stylesheet">
 <script>
   window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, svg: { fontCache: 'global' } };
 </script>
@@ -20,13 +20,13 @@
 <style>
   :root {
     --stacr: #912338; --stacr-light: #E9C9CF; --ink: #1F2328; --muted: #5B6470;
-    --slate: #3B6EA8; --rule: #D9DDE3; --tint: #F6F3F1; --bg: #FFFFFF;
+    --slate: #3B6EA8; --rule: #D9DDE3; --tint: #F1F2F4; --bg: #FFFFFF;
     --maxw: 920px;
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
   body { margin: 0; background: var(--bg); color: var(--ink);
-         font: 17px/1.6 "Fira Sans", system-ui, -apple-system, "Segoe UI", sans-serif; }
+         font: 17px/1.6 "Lato", system-ui, -apple-system, "Segoe UI", sans-serif; }
   a { color: var(--stacr); }
   .topbar { height: 6px; background: var(--stacr); }
   main { max-width: var(--maxw); margin: 0 auto; padding: 0 20px 64px; }
@@ -34,6 +34,7 @@
   .venue { display: inline-block; font-weight: 600; font-size: 14px; letter-spacing: .06em;
            text-transform: uppercase; color: var(--stacr); border: 1.5px solid var(--stacr);
            border-radius: 999px; padding: 3px 14px; margin-bottom: 18px; }
+  h1, h2, .subtitle { font-family: "Raleway", "Lato", sans-serif; }
   h1 { font-size: clamp(28px, 5vw, 44px); line-height: 1.15; margin: 0 0 6px; font-weight: 700; }
   h1 .acr { color: var(--stacr); }
   .subtitle { font-size: clamp(18px, 2.6vw, 22px); color: var(--ink); margin: 0 0 20px; font-weight: 500; }
@@ -82,8 +83,8 @@
   .session { display: flex; flex-wrap: wrap; gap: 8px 28px; background: var(--tint); border-radius: 8px; padding: 16px 20px; }
   .session div b { display: block; font-size: 12px; letter-spacing: .07em; text-transform: uppercase; color: var(--stacr); }
   pre.bib { position: relative; background: #F3F4F6; border-radius: 8px; padding: 16px; overflow-x: auto;
-            font: 14px/1.5 "Fira Mono", ui-monospace, Menlo, monospace; }
-  .copy { position: absolute; top: 8px; right: 8px; font: 500 13px "Fira Sans", sans-serif; border: 1px solid var(--rule);
+            font: 14px/1.5 "Roboto Mono", ui-monospace, Menlo, monospace; }
+  .copy { position: absolute; top: 8px; right: 8px; font: 700 13px "Lato", sans-serif; border: 1px solid var(--rule);
           background: #fff; border-radius: 6px; padding: 4px 10px; cursor: pointer; color: var(--ink); }
   footer { max-width: var(--maxw); margin: 0 auto; padding: 20px 20px 40px; color: var(--muted); font-size: 14px;
            border-top: 1px solid var(--rule); }
